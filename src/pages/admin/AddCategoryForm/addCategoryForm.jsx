@@ -2,14 +2,18 @@ import { useState } from "react";
 import uploadMedia from "../../../utils/mediaUpload.js";
 import { getDownloadURL } from "firebase/storage";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { IoClose } from "react-icons/io5";
 
 export default function AddCategoryForm() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [features, setFeatures] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
   if (!token) {
@@ -18,37 +22,35 @@ export default function AddCategoryForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true)
-    const featuresArray = features.split(",")
+    setIsLoading(true);
+    const featuresArray = features.split(",");
 
     uploadMedia(image).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
         const categoryInfo = {
-            name: name,
-            price: price,
-            features: featuresArray,
-            description: description,
-            image: url
-        }
-        axios.post(import.meta.env.VITE_BACKEND_URL+"/api/category", categoryInfo,{
-            headers: {
-                Authorization: "Bearer "+token
+          name: name,
+          price: price,
+          features: featuresArray,
+          description: description,
+          image: url,
+        };
+        axios
+          .post(
+            import.meta.env.VITE_BACKEND_URL + "/api/category",
+            categoryInfo,
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
             }
-        }).then((res)=>{
-            console.log(res)
-            setIsLoading(false)
-        })
+          )
+          .then((res) => {
+            toast.success("category added successfully!");
+            navigate("/admin/categories/");
+            setIsLoading(false);
+          });
       });
     });
-    /*const featureList = features.split(",").map((feature) => feature.trim());
-    const categoryData = {
-      name,
-      price,
-      features: featureList,
-      description,
-      image,
-    };
-    console.log("Category Data:", categoryData);*/
   };
 
   return (
@@ -57,6 +59,9 @@ export default function AddCategoryForm() {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-[400px] flex flex-col gap-4"
       >
+        <button className="text-end">
+          <IoClose />
+        </button>
         <h2 className="text-xl font-bold mb-4 text-center">Add New Category</h2>
 
         <div>
@@ -133,11 +138,11 @@ export default function AddCategoryForm() {
           type="submit"
           className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 flex justify-center"
         >
-            {
-                isLoading?
-                <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>
-                :<span className="text-white ">Add Category</span>
-            }
+          {isLoading ? (
+            <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>
+          ) : (
+            <span className="text-white ">Add Category</span>
+          )}
         </button>
       </form>
     </div>

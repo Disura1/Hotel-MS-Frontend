@@ -6,11 +6,10 @@ import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function AdminCategories() {
-
-    const token = localStorage.getItem("token");
-    if(!token){
-        window.location.href = "/login"
-    }
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "/login";
+  }
 
   const [categories, setCategories] = useState([]);
   const [categoriesAreLoaded, setCategoriesAreLoaded] = useState(false);
@@ -31,82 +30,111 @@ export default function AdminCategories() {
     }
   }, [categoriesAreLoaded]);
 
-    function handleDelete(name){
-        axios.delete(import.meta.env.VITE_BACKEND_URL+"/api/category/"+name,{
-            headers: {
-                Authorization: "Bearer "+token
-            }
-        }).then(()=>{
-            toast.success("Category deleted successfully")
-            setCategoriesAreLoaded(false)
-        }).catch((err)=>{
-            toast.error("Error deleting category")
-        })
-    }
-
-  function handlePlusClick(){
-    navigate("/admin/add-category")
+  function handleDelete(name) {
+    axios
+      .delete(import.meta.env.VITE_BACKEND_URL + "/api/category/" + name, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((res) => {
+        setCategoriesAreLoaded(false);
+        toast.success("Category deleted successfully");
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+      });
+  }
+  function handlePlusClick() {
+    navigate("/admin/add-category");
   }
 
   return (
-    <div className="w-full">
-      <table className="min-w-full border-collapse border border-gray-300">
-        <thead>
+    <div className="w-full py-6 px-4">
+      <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
+        <thead className="bg-gradient-to-r from-c1 to-c2 text-white">
           <tr>
-            <th className="border border-gray-300 px-4 py-2">Name</th>
-            <th className="border border-gray-300 px-4 py-2">Price</th>
-            <th className="border border-gray-300 px-4 py-2">Features</th>
-            <th className="border border-gray-300 px-4 py-2">Description</th>
-            <th className="border border-gray-300 px-4 py-2">Image</th>
-            <th className="border border-gray-300 px-4 py-3 text-left">Actions</th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Name
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Price
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Features
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Description
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Image
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-gray-800 space-y-2">
           {categories.map((category, index) => (
-              <tr key={index} className="text-center">
-                <td className="border border-gray-300 px-4 py-2">
-                  {category.name}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  ${category.price}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  <ul>
-                    {category.features.map((feature, i) => {
-                      return <li key={i}>{feature}</li>; 
-                    })}
-                  </ul>
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {category.description}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                  {category.image ? (
-                    <img
-                      src={category.image}
-                      alt={category.name}
-                      className="h-16 w-16 object-cover"
-                    />
-                  ) : (
-                    "No Image"
-                  )}
-                </td>
-                <td className="border border-gray-300 px-4 py-2">
-                    <Link className="text-blue-500 mr-2" 
-                          to={"/admin/update-category"}
-                          state={category}>
-                        <FaEdit />
-                    </Link>
-                    <button onClick={()=>{handleDelete(category.name)}} className="text-red-500">
-                        <FaTrash />
-                    </button>
-                </td>
-              </tr>
+            <tr
+              key={index}
+              className={`hover:bg-indigo-50 transition-all duration-300 ${
+                index % 2 === 0 ? "bg-gray-50" : "bg-white"
+              }`}
+            >
+              <td className="px-6 py-4 border-b border-gray-200">
+                {category.name}
+              </td>
+              <td className="px-6 py-4 border-b border-gray-200">
+                ${category.price}
+              </td>
+              <td className="px-6 py-4 border-b border-gray-200">
+                <ul className="list-inside list-disc space-y-1">
+                  {category.features.map((feature, i) => (
+                    <li key={i} className="text-gray-600">
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </td>
+              <td className="px-6 py-4 border-b border-gray-200">
+                {category.description}
+              </td>
+              <td className="px-6 py-4 border-b border-gray-200">
+                {category.image ? (
+                  <img
+                    src={category.image}
+                    alt={category.name}
+                    className="h-16 w-16 object-cover rounded-lg shadow-sm"
+                  />
+                ) : (
+                  "No Image"
+                )}
+              </td>
+              <td className="px-6 py-4 border-b border-gray-200 flex items-center justify-start space-x-4">
+                <Link
+                  to={"/admin/update-category"}
+                  state={category}
+                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition duration-200"
+                >
+                  <FaEdit className="text-xl" />
+                </Link>
+                <button
+                  onClick={() => handleDelete(category.name)}
+                  className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200"
+                >
+                  <FaTrash className="text-xl" />
+                </button>
+              </td>
+            </tr>
           ))}
         </tbody>
       </table>
-      <button onClick={()=>{handlePlusClick()}} className="bg-green-500 w-[60px] h-[60px] rounded-full text-4xl flex justify-center items-center fixed bottom-5 right-10">
-        <FaPlus color="white"/>
+      <button
+        onClick={handlePlusClick}
+        className="bg-c3 rounded-full w-16 h-16 flex items-center justify-center shadow-xl hover:shadow-2xl transition duration-300 absolute bottom-6 right-11"
+      >
+        <FaPlus size={24} />
       </button>
     </div>
   );

@@ -1,12 +1,49 @@
-import UserTag from "../userData/userData";
+import UserTag from "../userData/userdata.jsx";
 
 function Header() {
   return (
-    <header className="fixed z-10 w-full bg-c2 flex justify-between p-[10px] items-center">
-      <h1 className="text-[30px] font-bold text-c4 cursor-pointer">Hotel Management System</h1>
+    <header className="w-full absolute top-0 left-0 z-50  flex items-center justify-between px-6 py-6 shadow-md">
+      <h1 onClick={() => {
+            window.location.href = "http://localhost:5173/";
+          }} className="cursor-pointer text-c4 font-bold text-4xl">Hotel Management System</h1>
+
+      {/* Navigation Links */}
+      <nav className="hidden md:flex space-x-14 text-xl">
+        <a
+          href="#gallery"
+          className="text-white hover:text-c2 transition font-semibold"
+        >
+          Gallery
+        </a>
+        <a
+          href="#reviews"
+          className="text-white hover:text-c2 transition font-semibold"
+        >
+          Reviews
+        </a>
+        <a
+          href="#inquiries"
+          className="text-white hover:text-c2 transition font-semibold"
+        >
+          Inquiries
+        </a>
+        <a
+          href="#rooms"
+          className="text-white hover:text-c2 transition font-semibold"
+        >
+          Rooms
+        </a>
+        <a
+          href="#contact"
+          className="text-white hover:text-c2 transition font-semibold"
+        >
+          Contact Us
+        </a>
+      </nav>
+
+      {/* User Info */}
       <UserTag
-        imageLink="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSeatcmYRYsMNho5mAp9qySUzghxQYU_TPGw&s"
-        name="User Name"
+        imageLink="person.png"
       />
     </header>
   );

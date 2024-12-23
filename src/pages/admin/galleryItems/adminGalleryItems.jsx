@@ -7,7 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 export default function AdminGalleryItems() {
   const token = localStorage.getItem("token");
 
-  if (token == null) {
+  if (!token) {
     window.location.href = "/login";
   }
 
@@ -21,7 +21,6 @@ export default function AdminGalleryItems() {
       axios
         .get(import.meta.env.VITE_BACKEND_URL + "/api/gallery")
         .then((res) => {
-          console.log(res)
           console.log(res.data.list);
           setGalleryItems(res.data.list);
           setGalleryItemsIsLoaded(true);
@@ -39,7 +38,7 @@ export default function AdminGalleryItems() {
           Authorization: "Bearer " + token,
         },
       })
-      .then((res) => {
+      .then(() => {
         setGalleryItemsIsLoaded(false);
         toast.success("Gallery item deleted successfully");
       })
@@ -53,61 +52,74 @@ export default function AdminGalleryItems() {
   }
 
   return (
-    <div className="w-full">
-      <button
-        className="bg-red-900 w-[60px] h-[60px] rounded-full text-2xl text-center flex justify-center items-center fixed bottom-5 right-5"
-        onClick={handlePlusClick}
-      >
-        <FaPlus color="white" />
-      </button>
-
-      <table className="min-w-full border-collapse border border-gray-300">
-        <thead>
+    <div className="w-full py-6 px-4">
+      <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
+        <thead className="bg-gradient-to-r from-c1 to-c2 text-white">
           <tr>
-            <th className="border border-gray-300 px-4 py-2">Name</th>
-            <th className="border border-gray-300 px-4 py-2">Description</th>
-            <th className="border border-gray-300 px-4 py-2">Image</th>
-            <th className="border border-gray-300 px-4 py-2">Actions</th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Name
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Description
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Image
+            </th>
+            <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-gray-800 space-y-2">
           {galleryItems.map((item, index) => (
-            <tr key={index} className="text-center">
-              <td className="border border-gray-300 px-4 py-2">{item.name}</td>
-              <td className="border border-gray-300 px-4 py-2">
+            <tr
+              key={index}
+              className={`hover:bg-indigo-50 transition-all duration-300 ${
+                index % 2 === 0 ? "bg-gray-50" : "bg-white"
+              }`}
+            >
+              <td className="px-6 py-4 border-b border-gray-200">
+                {item.name}
+              </td>
+              <td className="px-6 py-4 border-b border-gray-200">
                 {item.description}
               </td>
-              <td className="border border-gray-300 px-4 py-2">
+              <td className="px-6 py-4 border-b border-gray-200">
                 {item.image ? (
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="h-16 w-16 object-cover"
+                    className="h-16 w-16 object-cover rounded-lg shadow-sm"
                   />
                 ) : (
                   "No Image"
                 )}
               </td>
-              <td className="border border-gray-300 px-4 py-2">
+              <td className="px-6 py-4 border-b border-gray-200 flex items-center justify-start space-x-4">
                 <Link
-                  className="text-blue-500 mr-2"
                   to={"/admin/update-gallery-item"}
                   state={item}
+                  className="bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600 transition duration-200"
                 >
-                  <FaEdit />
+                  <FaEdit className="text-xl" />
                 </Link>
-
                 <button
                   onClick={() => handleDelete(item._id)}
-                  className="text-red-500"
+                  className="bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition duration-200"
                 >
-                  <FaTrash />
+                  <FaTrash className="text-xl" />
                 </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+      <button
+        onClick={handlePlusClick}
+        className="bg-c3 rounded-full w-16 h-16 flex items-center justify-center shadow-xl hover:shadow-2xl transition duration-300 absolute bottom-6 right-11"
+      >
+        <FaPlus size={24} />
+      </button>
     </div>
   );
 }

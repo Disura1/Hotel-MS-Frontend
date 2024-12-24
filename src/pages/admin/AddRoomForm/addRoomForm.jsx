@@ -14,38 +14,48 @@ export default function AddRoomForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
-  if (token == null) {
+  if (!token) {
     window.location.href = "/login";
+    return null; // Prevent further rendering
   }
 
   useEffect(() => {
-    // Fetch categories from the backend
     axios
       .get(import.meta.env.VITE_BACKEND_URL + "/api/category")
       .then((res) => {
-        setCategories(res.data.categories);
+        setCategories(res.data.categories || []);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch(() => {
         toast.error("Failed to load categories.");
       });
   }, []);
 
   const handleImageChange = (e) => {
-    setImages(Array.from(e.target.files)); // Handle multiple files
+    const selectedFiles = Array.from(e.target.files);
+    const validFiles = selectedFiles.filter((file) =>
+      file.type.startsWith("image/")
+    );
+
+    if (validFiles.length !== selectedFiles.length) {
+      toast.error("Only image files are allowed.");
+    }
+    setImages(validFiles);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!category) {
+      toast.error("Please select a category.");
+      return;
+    }
+
     setIsLoading(true);
 
-    const imageUploadPromises = images.map((image) =>
-      uploadMedia(image).then((snapshot) =>
-        getDownloadURL(snapshot.ref)
-      )
-    );
-
     try {
+      const imageUploadPromises = images.map((image) =>
+        uploadMedia(image).then((snapshot) => getDownloadURL(snapshot.ref))
+      );
+
       const imageUrls = await Promise.all(imageUploadPromises);
       const roomData = {
         category,
@@ -55,24 +65,27 @@ export default function AddRoomForm() {
         photos: imageUrls,
       };
 
-      const result = await axios.post(import.meta.env.VITE_BACKEND_URL + "/api/rooms", roomData, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      console.log(result)
+      await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/api/room",
+        roomData,
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
 
       toast.success("Room added successfully!");
-      setIsLoading(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to add room.");
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="w-full h-[100vh] flex justify-center items-center">
+    <div className="w-full min-h-screen flex justify-center items-center bg-gray-100">
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-[400px] flex flex-col gap-4"
@@ -80,7 +93,7 @@ export default function AddRoomForm() {
         <h2 className="text-xl font-bold mb-4 text-center">Add New Room</h2>
 
         <div>
-          <label className="block font-medium mb-1" htmlFor="category">
+          <label htmlFor="category" className="block font-medium mb-1">
             Category
           </label>
           <select
@@ -158,13 +171,12 @@ export default function AddRoomForm() {
 
         <button
           type="submit"
-          className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 flex justify-center items-center"
+          disabled={isLoading}
+          className={`bg-blue-500 px-4 py-2 rounded ${
+            isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+          }`}
         >
-          {isLoading ? (
-            <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>
-          ) : (
-            <span className="text-white">Add Room</span>
-          )}
+          {isLoading ? "Submitting..." : "Add Rooms"}
         </button>
       </form>
     </div>

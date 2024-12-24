@@ -9,9 +9,14 @@ export default function UpdateRoomForm() {
   const location = useLocation();
   const navigate = useNavigate();
   const room = location.state; // Room data passed via state
-  console.log(room);
 
-  // Form state
+  // Ensure `room` exists before proceeding
+  if (!room) {
+    toast.error("No room data provided!");
+    navigate("/admin/rooms");
+    return null;
+  }
+
   const [category, setCategory] = useState(room.category || "");
   const [maxGuests, setMaxGuests] = useState(room.maxGuests || 3);
   const [specialDescription, setSpecialDescription] = useState(
@@ -23,16 +28,17 @@ export default function UpdateRoomForm() {
   const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
-  if (token == null) {
-    window.location.href = "/login";
+  if (!token) {
+    toast.error("You must be logged in!");
+    navigate("/login");
+    return null;
   }
 
   const handleImageChange = (e) => {
-    setNewImages(Array.from(e.target.files)); // Handle new image uploads
+    setNewImages(Array.from(e.target.files));
   };
 
   const handleRemovePhoto = (index) => {
-    // Remove photo at the specified index
     setPhotos((prevPhotos) => prevPhotos.filter((_, i) => i !== index));
   };
 
@@ -44,13 +50,13 @@ export default function UpdateRoomForm() {
       // Upload new images if any
       let newImageUrls = [];
       if (newImages.length > 0) {
-        const imageUploadPromises = newImages.map((image) =>
+        const uploadPromises = newImages.map((image) =>
           uploadMedia(image).then((snapshot) => getDownloadURL(snapshot.ref))
         );
-        newImageUrls = await Promise.all(imageUploadPromises);
+        newImageUrls = await Promise.all(uploadPromises);
       }
 
-      // Combine old photos (after removal) and new photos
+      // Combine old and new photos
       const updatedPhotos = [...photos, ...newImageUrls];
 
       // Prepare updated room data
@@ -64,7 +70,7 @@ export default function UpdateRoomForm() {
 
       // Send update request
       await axios.put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/rooms/${room.roomId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/room/${room.roomId}`,
         updatedRoomData,
         {
           headers: {
@@ -74,11 +80,11 @@ export default function UpdateRoomForm() {
       );
 
       toast.success("Room updated successfully!");
-      setIsLoading(false);
-      navigate("/admin/rooms"); // Redirect to rooms page after successful update
+      navigate("/admin/rooms");
     } catch (err) {
-      console.error(err);
+      console.error("Error updating room:", err);
       toast.error("Failed to update room.");
+    } finally {
       setIsLoading(false);
     }
   };
@@ -165,12 +171,15 @@ export default function UpdateRoomForm() {
 
         <button
           type="submit"
-          className="w-full px-4 py-2 mt-4 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 flex justify-center items-center"
+          disabled={isLoading}
+          className={`w-full px-4 py-2 mt-4 font-bold text-white bg-blue-500 rounded ${
+            isLoading ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-600"
+          }`}
         >
           {isLoading ? (
-            <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>
+            <div className="w-5 h-5 border-2 border-t-white border-blue-500 rounded-full animate-spin"></div>
           ) : (
-            <span>Update Room</span>
+            "Update Room"
           )}
         </button>
       </form>

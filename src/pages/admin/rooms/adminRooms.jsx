@@ -1,13 +1,8 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {
-  FaEdit,
-  FaTrash,
-  FaToggleOn,
-  FaToggleOff,
-  FaPlus,
-} from "react-icons/fa";
+import { FaEdit, FaTrash, FaToggleOn, FaToggleOff, FaPlus } from "react-icons/fa";
 import toast from "react-hot-toast";
+import Modal from "react-modal";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminRooms() {
@@ -19,7 +14,7 @@ export default function AdminRooms() {
 
   const fetchRooms = () => {
     axios
-      .get(import.meta.env.VITE_BACKEND_URL + "/api/rooms")
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/room")
       .then((res) => {
         console.log(res.data);
         setRooms(res.data.rooms);
@@ -40,7 +35,7 @@ export default function AdminRooms() {
 
     if (!confirm("Are you sure you want to delete this room?")) return;
     axios
-      .delete(`${import.meta.env.VITE_BACKEND_URL}/api/rooms/${roomId}`, {
+      .delete(`${import.meta.env.VITE_BACKEND_URL}/api/room/${roomId}`, {
         headers: {
           Authorization: "Bearer " + token,
         },
@@ -57,7 +52,7 @@ export default function AdminRooms() {
   const handleToggleAvailability = (roomId, currentStatus) => {
     axios
       .put(
-        `${import.meta.env.VITE_BACKEND_URL}/api/rooms/${roomId}`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/room/${roomId}`,
         {
           available: !currentStatus,
         },
@@ -76,54 +71,26 @@ export default function AdminRooms() {
       });
   };
 
-  const openModal = (room) => {
-    setSelectedRoom(room);
-    setModalIsOpen(true);
-  };
-
-  const closeModal = () => {
-    setModalIsOpen(false);
-    setSelectedRoom(null);
-  };
-
   return (
     <div className="w-full">
       <button
-        className="bg-c3 rounded-full w-16 h-16 flex items-center justify-center shadow-xl hover:shadow-2xl transition duration-300 absolute bottom-6 right-11"
+        className="bg-blue-600 text-white w-14 h-14 rounded-full flex justify-center items-center fixed bottom-5 right-5 shadow-lg hover:bg-blue-700 transition"
         onClick={() => {
           navigate("/admin/add-room");
         }}
       >
-        <FaPlus size={24}/>
+        <FaPlus />
       </button>
       <div className="w-full py-6 px-4">
         <table className="min-w-full bg-white rounded-lg overflow-hidden shadow-lg">
           <thead className="bg-gradient-to-r from-c1 to-c2 text-white">
             <tr>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Room ID
-              </th>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Category
-              </th>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Max Guests
-              </th>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Available
-              </th>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Photos
-              </th>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Special Description
-              </th>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Notes
-              </th>
-              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">
-                Actions
-              </th>
+              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">Room ID</th>
+              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">Category</th>
+              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">Max Guests</th>
+              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">Available</th>
+              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">Special Description</th>
+              <th className="px-6 py-4 text-left font-semibold text-sm uppercase tracking-wider border-b-2 border-gray-300">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -175,7 +142,6 @@ export default function AdminRooms() {
             ))}
           </tbody>
         </table>
-        
       </div>
     </div>
   );

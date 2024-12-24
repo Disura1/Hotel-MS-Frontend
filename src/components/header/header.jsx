@@ -2,7 +2,7 @@ import UserTag from "../userData/userdata.jsx";
 
 function Header() {
   return (
-    <header className="w-full absolute top-0 left-0 z-50  flex items-center justify-between px-6 py-6 shadow-md">
+    <header className="w-full absolute top-0 left-0 z-50  flex items-center justify-between px-6 py-6 shadow-2xl">
       <h1 onClick={() => {
             window.location.href = "http://localhost:5173/";
           }} className="cursor-pointer text-c4 font-bold text-4xl">Hotel Management System</h1>

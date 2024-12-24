@@ -1,5 +1,5 @@
 import { useState } from "react";
-import uploadMedia from "../../../utils/mediaUpload.js";
+import uploadMedia, { uploadMediaToSupabase } from "../../../utils/mediaUpload.js";
 import { getDownloadURL } from "firebase/storage";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -25,15 +25,18 @@ export default function AddCategoryForm() {
     setIsLoading(true);
     const featuresArray = features.split(",");
 
-    uploadMedia(image).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
+    uploadMediaToSupabase(file).then((res) => {
+      getDownloadURL(file.name).then((res) => {
+        const url = supabase.storage
         const categoryInfo = {
           name: name,
           price: price,
           features: featuresArray,
           description: description,
-          image: url,
+          image: url.data.publicUrl,
         };
+        console.log(snapshot.ref)
+        console.log(url)
         axios
           .post(
             import.meta.env.VITE_BACKEND_URL + "/api/category",

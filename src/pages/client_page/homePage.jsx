@@ -3,6 +3,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Footer from "../../components/footer/footer";
+import ContactUs from "../../components/contactUs/contactUs";
 
 export default function HomePage() {
   const [categories, setCategories] = useState([]);
@@ -44,7 +46,7 @@ export default function HomePage() {
     setIsLoading(true);
     axios
       .post(
-        import.meta.env.VITE_BACKEND_URL + "/api/bookings/create-by-category",
+        import.meta.env.VITE_BACKEND_URL + "/api/booking/create-by-category",
         {
           category: selectedCategory,
           start: startDate,
@@ -69,11 +71,11 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="relative w-full h-screen">
+      <div className="relative w-full h-full">
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center space-y-10 h-full bg-black bg-opacity-50">
           {/* Booking Section */}
-          <div className="flex flex-col lg:flex-row justify-around items-center w-[80%] lg:w-[800px] h-auto lg:h-[120px] rounded-xl bg-gradient-to-r from-c1 via-c2 to-c3 p-4 shadow-lg">
+          <div className="mt-[700px] flex flex-col lg:flex-row justify-around items-center w-[80%] lg:w-[800px] h-auto lg:h-[120px] rounded-xl bg-gradient-to-r from-c1 via-c2 to-c3 p-4 shadow-lg">
             <div className="flex flex-col items-center w-full lg:w-auto mb-4 lg:mb-0">
               <label
                 htmlFor="check-in"
@@ -138,13 +140,13 @@ export default function HomePage() {
 
           {/* Welcome Section */}
           <div className="text-center space-y-4">
-            <h1 className="text-4xl md:text-6xl text-c2 font-bold">
+            <h1 className="text-4xl py-8 md:text-5xl text-c2 font-bold">
               Welcome to the hotel
             </h1>
           </div>
 
           {/* Call-to-Action */}
-          <div className="flex justify-center space-x-14">
+          <div className="flex justify-center py-5 space-x-14">
             <button className="bg-[#00000000] border-[3px] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-c1 transition">
               Explore Rooms
             </button>
@@ -152,7 +154,10 @@ export default function HomePage() {
               Contact Us
             </button>
           </div>
+          <ContactUs />
+          <Footer />
         </div>
+        
       </div>
     </>
   );

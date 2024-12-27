@@ -1,6 +1,5 @@
 import { useState } from "react";
-import uploadMedia, { uploadMediaToSupabase } from "../../../utils/mediaUpload.js";
-import { getDownloadURL } from "firebase/storage";
+import { supabase } from "../../../utils/mediaUpload.js"; // Ensure supabase is correctly imported
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -20,40 +19,64 @@ export default function AddCategoryForm() {
     window.location.href = "/login";
   }
 
-  const handleSubmit = (e) => {
+  // Handle form submission
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     const featuresArray = features.split(",");
 
-    uploadMediaToSupabase(file).then((res) => {
-      getDownloadURL(file.name).then((res) => {
-        const url = supabase.storage
+    try {
+      // Step 1: Upload the image to Supabase
+      if (image) {
+        const { data, error } = await supabase.storage
+          .from("images") // Replace with your actual bucket name
+          .upload(`categories/${image.name}`, image);
+
+        if (error) throw new Error(error.message);
+
+        // Step 2: Get the public URL of the uploaded image
+        const { publicURL, error: urlError } = supabase.storage
+          .from("images")
+          .getPublicUrl(data.path);
+
+        if (error) {
+          console.log("Error fetching image: ", error);
+        } else {
+          console.log("Image URL: ", publicURL);
+        }
+
+        // Step 3: Prepare the category data
         const categoryInfo = {
           name: name,
           price: price,
           features: featuresArray,
           description: description,
-          image: url.data.publicUrl,
+          image: publicURL, // The public URL of the uploaded image
         };
-        console.log(snapshot.ref)
-        console.log(url)
-        axios
-          .post(
-            import.meta.env.VITE_BACKEND_URL + "/api/category",
-            categoryInfo,
-            {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            }
-          )
-          .then((res) => {
-            toast.success("category added successfully!");
-            navigate("/admin/categories/");
-            setIsLoading(false);
-          });
-      });
-    });
+
+        // Step 4: Send the category data to the backend API
+        const response = await axios.post(
+          import.meta.env.VITE_BACKEND_URL + "/api/category",
+          categoryInfo,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Success handling
+        toast.success("Category added successfully!");
+        navigate("/admin/categories/");
+      } else {
+        toast.error("Please upload an image.");
+      }
+    } catch (error) {
+      // Error handling
+      toast.error("An error occurred: " + error.message);
+    } finally {
+      setIsLoading(false); // Stop the loading state
+    }
   };
 
   return (
@@ -62,7 +85,7 @@ export default function AddCategoryForm() {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-[400px] flex flex-col gap-4"
       >
-        <button className="text-end">
+        <button className="text-end" onClick={() => navigate("/admin/categories/")}>
           <IoClose />
         </button>
         <h2 className="text-xl font-bold mb-4 text-center">Add New Category</h2>
@@ -144,7 +167,7 @@ export default function AddCategoryForm() {
           {isLoading ? (
             <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>
           ) : (
-            <span className="text-white ">Add Category</span>
+            <span className="text-white">Add Category</span>
           )}
         </button>
       </form>

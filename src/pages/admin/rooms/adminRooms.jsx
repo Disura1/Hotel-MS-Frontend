@@ -117,7 +117,7 @@ export default function AdminRooms() {
                       }}
                       className="text-blue-500 hover:text-blue-700 transition"
                     >
-                      {room.available ? <FaToggleOn /> : <FaToggleOff />}
+                      {room.available ? <FaToggleOn size={30}/> : <FaToggleOff size={30}/>}
                     </button>
                     <button
                       onClick={() => {
@@ -125,7 +125,7 @@ export default function AdminRooms() {
                       }}
                       className="text-green-500 hover:text-green-700 transition"
                     >
-                      <FaEdit />
+                      <FaEdit size={25}/>
                     </button>
                     <button
                       onClick={(e) => {
@@ -134,7 +134,7 @@ export default function AdminRooms() {
                       }}
                       className="text-red-500 hover:text-red-700 transition"
                     >
-                      <FaTrash />
+                      <FaTrash size={20}/>
                     </button>
                   </div>
                 </td>

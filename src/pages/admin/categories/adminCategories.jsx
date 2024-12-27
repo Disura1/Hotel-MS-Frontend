@@ -106,11 +106,13 @@ export default function AdminCategories() {
                     src={category.image}
                     alt={category.name}
                     className="h-16 w-16 object-cover rounded-lg shadow-sm"
+                    onError={(e) => (e.target.src = "path-to-default-image")} // Fallback if image not found
                   />
                 ) : (
-                  "No Image"
+                  <span className="text-gray-500">No Image</span>
                 )}
               </td>
+
               <td className="px-6 py-4 border-b border-gray-200 flex items-center justify-start space-x-4">
                 <Link
                   to={"/admin/update-category"}

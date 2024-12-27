@@ -11,21 +11,18 @@ export default function ContactUs() {
   return (
     <div className="flex justify-around w-[95%] px-4 py-4 rounded-2xl bg-gray-400">
       <div className="w-[100%]">
-        <h1 className="text-center font-extrabold mb-3 text-xl">Inquiries</h1>
-        <div className="bg-c1 px-2 py-2 rounded-2xl">
+        <div className="bg-c1 px-4 py-4 rounded-lg">
           <div className="flex flex-col">
-            <h1 className="text-center font-bold">Inquiries Form</h1>
-            <label for="email">Email</label>
+            <h1 className="text-center font-bold text-xl mb-2">Inquiries</h1>
             <input
-              className="bg-white mb-1 rounded-md p-1 placeholder-gray-600"
+              className="bg-white mb-2 rounded-md p-2 placeholder-gray-600"
               type="email"
               id="email"
               placeholder="Enter your email"
             />
-            <label for="reason">Reason</label>
             <textarea
-              className="bg-white mb-2 rounded-md p-1 placeholder-gray-600"
-              rows="2"
+              className="bg-white mb-2 rounded-md p-2 placeholder-gray-600"
+              rows="3"
               name="reason"
               id="reason"
               placeholder="Put your reason here..."
@@ -48,11 +45,11 @@ export default function ContactUs() {
         </div>
         <div className="flex justify-around items-center mt-2">
           <h1 className="text-c1 font-extrabold">Contact Us On</h1>
-          <div className="flex items-center bg-c1 px-10 py-2 rounded-2xl">
-            <MdEmail className="mr-10" /> hotel@gmail.com
+          <div className="cursor-pointer flex items-center bg-c1 px-10 py-2 rounded-2xl">
+            <MdEmail className="mr-10" size={30}/> hotel@gmail.com
           </div>
-          <div className="flex items-center bg-c1 px-10 py-2 rounded-2xl">
-            <BsTelephoneFill className="mr-10" /> +94 112 345 678
+          <div className="cursor-pointer flex items-center bg-c1 px-10 py-2 rounded-2xl">
+            <BsTelephoneFill className="mr-10" size={25}/> +94 112 345 678
           </div>
         </div>
       </div>

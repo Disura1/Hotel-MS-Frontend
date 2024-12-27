@@ -3,8 +3,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import toast from "react-hot-toast";
-import Footer from "../../components/footer/footer";
-import ContactUs from "../../components/contactUs/contactUs";
+import Footer from "../../components/footer/footer.jsx";
+import ContactUs from "../../components/contactUs/contactUs.jsx";
+import ReviewSection from "../../components/reviews/reviews.jsx";
+import CategoryCarousel from "../../components/categories/categories.jsx";
 
 export default function HomePage() {
   const [categories, setCategories] = useState([]);
@@ -75,7 +77,7 @@ export default function HomePage() {
         {/* Content */}
         <div className="relative z-10 flex flex-col items-center justify-center space-y-10 h-full bg-black bg-opacity-50">
           {/* Booking Section */}
-          <div className="mt-[700px] flex flex-col lg:flex-row justify-around items-center w-[80%] lg:w-[800px] h-auto lg:h-[120px] rounded-xl bg-gradient-to-r from-c1 via-c2 to-c3 p-4 shadow-lg">
+          <div className="mt-[1500px] flex flex-col lg:flex-row justify-around items-center w-[80%] lg:w-[800px] h-auto lg:h-[120px] rounded-xl bg-gradient-to-r from-c1 via-c2 to-c3 p-4 shadow-lg">
             <div className="flex flex-col items-center w-full lg:w-auto mb-4 lg:mb-0">
               <label
                 htmlFor="check-in"
@@ -154,6 +156,8 @@ export default function HomePage() {
               Contact Us
             </button>
           </div>
+          <CategoryCarousel />
+          <ReviewSection />
           <ContactUs />
           <Footer />
         </div>

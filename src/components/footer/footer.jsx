@@ -10,7 +10,9 @@ import { Link } from "react-router-dom";
 export default function Footer() {
   return (
     <footer className="flex flex-col items-center w-full px-4 py-4 bg-c1 bottom-0">
-      <h1 className="font-thin mb-2 text-xl">Hotel Management System</h1>
+      <h1 onClick={() => {
+            window.location.href = "http://localhost:5173/";
+          }} className="cursor-pointer font-thin mb-2 text-xl">Hotel Management System</h1>
       <div className="flex w-full justify-around">
         <div>
           <h3 className="font-bold">Explore</h3>

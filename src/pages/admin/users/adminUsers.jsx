@@ -31,7 +31,7 @@ export default function AdminUsers() {
 
   const fetchUsers = () => {
     axios
-      .get(import.meta.env.VITE_BACKEND_URL + "/api/users")
+      .get(import.meta.env.VITE_BACKEND_URL + "/api/users/all")
       .then((res) => {
         setUsers(res.data.users);
       })

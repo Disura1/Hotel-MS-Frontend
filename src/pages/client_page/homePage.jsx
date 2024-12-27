@@ -3,6 +3,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import toast from "react-hot-toast";
+import Footer from "../../components/footer/footer";
 
 export default function HomePage() {
   const [categories, setCategories] = useState([]);
@@ -152,6 +153,7 @@ export default function HomePage() {
               Contact Us
             </button>
           </div>
+          <Footer />
         </div>
       </div>
     </>

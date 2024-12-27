@@ -18,7 +18,7 @@ import UpdateCategoryForm from "../admin/UpdateCategoryForm/updateCategory.jsx";
 import AddGalleryItem from "../admin/AddGalleyForm/addGalleryForm.jsx";
 import UpdateGalleryItemForm from "../admin/UpdateGalleryItem/updateGallery.jsx";
 import AddRoomForm from "../admin/AddRoomForm/addRoomForm.jsx";
-import UpdateRoomForm from "../admin/UpdateRoomForm/updateRoomForm.Jsx";
+import UpdateRoomForm from "../admin/UpdateRoomForm/updateRoomForm.jsx";
 
 export default function AdminPage() {
   return (

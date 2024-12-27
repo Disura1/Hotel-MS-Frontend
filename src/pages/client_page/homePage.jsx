@@ -154,7 +154,6 @@ export default function HomePage() {
               Contact Us
             </button>
           </div>
-          <ContactUs />
           <Footer />
         </div>
         

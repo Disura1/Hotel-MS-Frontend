@@ -1,79 +1,91 @@
-import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { FaEdit, FaPlus, FaTrash, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
-const CategoryCarousel = () => {
+export default function CategoryCarousel() {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    window.location.href = "/login";
+  }
+
   const [categories, setCategories] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [categoriesAreLoaded, setCategoriesAreLoaded] = useState(false);
+  const [currentCategoryIndex, setCurrentCategoryIndex] = useState(0);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch categories from the backend
-    fetch("http://localhost:5000/api/categories")
-      .then((response) => response.json())
-      .then((data) => setCategories(data.categories))
-      .catch((error) => console.error("Error fetching categories:", error));
-  }, []);
+    if (!categoriesAreLoaded) {
+      axios
+        .get(import.meta.env.VITE_BACKEND_URL + "/api/category")
+        .then((res) => {
+          setCategories(res.data.categories);
+          setCategoriesAreLoaded(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [categoriesAreLoaded]);
 
-  const nextCategory = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % categories.length);
-  };
+  function nextCategory() {
+    setCurrentCategoryIndex((prevIndex) => (prevIndex + 1) % categories.length);
+  }
 
-  const prevCategory = () => {
-    setCurrentIndex((prevIndex) =>
-      (prevIndex - 1 + categories.length) % categories.length
+  function prevCategory() {
+    setCurrentCategoryIndex(
+      (prevIndex) => (prevIndex - 1 + categories.length) % categories.length
     );
-  };
+  }
 
   return (
-    <div className="w-[95%] h-[350px] flex flex-col justify-center items-center bg-gray-100 p-4 rounded-2xl shadow-lg">
-      {/* Title */}
-      <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
-        Categories
-      </h2>
-
-      {/* Carousel */}
-      {categories.length > 0 && (
-        <div className="relative w-full h-56 flex items-center justify-center overflow-hidden">
-          <button
-            onClick={prevCategory}
-            className="absolute left-4 bg-gray-700 text-white rounded-full p-2 hover:bg-gray-600"
-          >
-            ❮
-          </button>
-
-          <div className="w-[90%] flex flex-col items-center text-center space-y-4">
-            <img
-              src={categories[currentIndex].image || "/placeholder.jpg"}
-              alt={categories[currentIndex].name}
-              className="w-40 h-40 object-cover rounded-full border-4 border-blue-500 shadow-md"
-            />
-            <h3 className="text-lg font-semibold text-gray-800">
-              {categories[currentIndex].name}
+    <div className="w-[65%] py-6 px-4">
+      {/* Slide Show Container */}
+      <div className="relative flex flex-row items-center justify-center">
+        {/* Category Slide */}
+        {categories.length > 0 && (
+          <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+            <div className="flex justify-center items-center">
+              <img
+                src={categories[currentCategoryIndex].image || "path-to-default-image"}
+                alt={categories[currentCategoryIndex].name}
+                className="h-64 w-64 object-cover rounded-lg shadow-sm"
+              />
+            </div>
+            <h3 className="text-xl font-semibold text-center mt-4">
+              {categories[currentCategoryIndex].name}
             </h3>
-            <p className="text-gray-600">{categories[currentIndex].description}</p>
-            <p className="text-green-700 font-bold">
-              Price: ${categories[currentIndex].price}
-            </p>
-            <ul className="text-gray-600 list-disc list-inside">
-              {categories[currentIndex].features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
+            <p className="text-center mt-2">{categories[currentCategoryIndex].description}</p>
+            <div className="mt-4">
+              <ul className="list-inside list-disc space-y-1 text-center">
+                {categories[currentCategoryIndex].features.map((feature, i) => (
+                  <li key={i} className="text-gray-600">
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p className="text-center mt-4 text-lg font-semibold">Rs: {categories[currentCategoryIndex].price}.00</p>
+            <div className="absolute top-1/2 left-4 transform -translate-y-1/2">
+              <button
+                onClick={prevCategory}
+                className="bg-gray-800 text-white p-2 border-8 border-white rounded-full hover:bg-gray-700 transition duration-200"
+              >
+                <FaChevronLeft size={34} />
+              </button>
+            </div>
+            <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+              <button
+                onClick={nextCategory}
+                className="bg-gray-800 text-white p-2 border-8 border-white rounded-full hover:bg-gray-700 transition duration-200"
+              >
+                <FaChevronRight size={34} />
+              </button>
+            </div>
           </div>
-
-          <button
-            onClick={nextCategory}
-            className="absolute right-4 bg-gray-700 text-white rounded-full p-2 hover:bg-gray-600"
-          >
-            ❯
-          </button>
-        </div>
-      )}
-
-      {/* No categories available */}
-      {categories.length === 0 && (
-        <p className="text-gray-600 text-lg">No categories available.</p>
-      )}
+        )}
+      </div>
     </div>
   );
-};
-
-export default CategoryCarousel;
+}

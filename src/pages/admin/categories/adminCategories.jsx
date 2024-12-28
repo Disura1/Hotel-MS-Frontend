@@ -86,7 +86,7 @@ export default function AdminCategories() {
                 {category.name}
               </td>
               <td className="px-6 py-4 border-b border-gray-200">
-                ${category.price}
+                Rs: {category.price}.00
               </td>
               <td className="px-6 py-4 border-b border-gray-200">
                 <ul className="list-inside list-disc space-y-1">

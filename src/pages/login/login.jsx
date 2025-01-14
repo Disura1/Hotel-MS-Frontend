@@ -131,7 +131,7 @@ export default function AuthPage() {
             )}
 
             <button
-              className="absolute bottom-[30px] w-[40%] bg-blue-500 text-white text-xl h-[40px] rounded-full flex justify-center items-center"
+              className="absolute bottom-[30px] w-[40%] bg-blue-500 text-white text-xl h-[40px] rounded-full flex justify-center items-center hover:border-blue-500 hover:border-4 hover:bg-transparent hover:text-blue-500"
               onClick={isLogin ? handleLogin : handleSignup}
             >
               {isLogin ? (
@@ -168,7 +168,7 @@ export default function AuthPage() {
           onClick={() => {
             window.location.href = import.meta.env.VITE_FRONTEND_URL;
           }}
-          className="flex items-center bg-c2 font-bold text- px-6 py-1 rounded-xl text-2xl"
+          className="flex items-center bg-c2 font-bold text- px-6 py-1 rounded-xl text-2xl hover:border-c2 hover:border-4 hover:bg-transparent hover:text-c2 hover:py-0 hover:px-5"
         >
           <RiArrowGoBackLine className="mr-2"/>
           Back to Home

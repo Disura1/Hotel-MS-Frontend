@@ -150,12 +150,12 @@ export default function HomePage() {
 
           {/* Call-to-Action */}
           <div className="flex justify-center py-5 space-x-14">
-            <button className="bg-[#00000000] border-[3px] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-c1 transition">
+            <a href="#rooms" className="bg-[#00000000] border-[3px] text-white font-semibold px-6 py-3 rounded-md shadow-md hover:bg-c1 transition">
               Explore Rooms
-            </button>
-            <button className="bg-transparent border-[3px] border-white text-white font-semibold px-6 py-3 rounded-md hover:bg-c1 hover:text-white transition">
+            </a>
+            <a href="#contact" className="bg-transparent border-[3px] border-white text-white font-semibold px-6 py-3 rounded-md hover:bg-c1 hover:text-white transition">
               Contact Us
-            </button>
+            </a>
           </div>
           <section id="gallery">
             <Gallery />

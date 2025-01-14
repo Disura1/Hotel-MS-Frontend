@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { RiLoginCircleFill } from "react-icons/ri";
+import toast from "react-hot-toast";
 
 function UserTag(props) {
   const [name, setName] = useState("");
@@ -46,6 +47,7 @@ function UserTag(props) {
             onClick={() => {
               localStorage.removeItem("token");
               setUserFound(false);
+              toast.success("Successfully Logout")
             }}
             className="bg-red-500 font-bold text-white px-4 py-1 rounded-md hover:bg-transparent hover:text-red-500 hover:border-4 hover:px-3 hover:py-0 hover:border-red-500 transition"
           >

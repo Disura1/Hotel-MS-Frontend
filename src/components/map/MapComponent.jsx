@@ -14,7 +14,7 @@ const MapComponent = ({ locations }) => {
   };
 
   return (
-    <LoadScript googleMapsApiKey="AIzaSyBD3hRTQ8hmM_vA8lyddRAZsxijLypi0u4">
+    <LoadScript googleMapsApiKey = {import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
       <GoogleMap
         mapContainerStyle={mapContainerStyle}
         center={defaultCenter}

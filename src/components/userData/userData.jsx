@@ -57,7 +57,7 @@ function UserTag(props) {
       ) : (
         <button
           onClick={() => {
-            window.location.href = import.meta.env.VITE_FRONTEND_URL + "/login";
+            window.location.href = "/login";
           }}
           className="flex items-center bg-blue-500 text-white font-bold px-4 py-1 rounded-md hover:bg-transparent hover:border-4 hover:border-blue-500 hover:px-3 hover:py-1 transition"
         >

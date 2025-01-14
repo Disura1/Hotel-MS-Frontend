@@ -49,7 +49,7 @@ const ReviewSection = () => {
   };
 
   return (
-    <div className="w-[95%] h-[350px] flex justify-around items-center bg-gray-400 p-4 rounded-2xl">
+    <div className="w-[95%] h-[350px] flex justify-around items-center bg-gray-400 p-4 rounded-2xl mt-[100px]">
       {/* Customer Reviews Section */}
       <div className="w-[65%] space-y-4 flex flex-col justify-center">
         <h2 className="text-xl font-bold text-gray-800 mb-4 text-center">

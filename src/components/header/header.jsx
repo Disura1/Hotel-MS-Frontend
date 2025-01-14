@@ -22,13 +22,14 @@ function Header() {
           Reviews
         </a>
         <a
-          href="#inquiries"
+          href="#contact"
           className="text-white hover:text-c2 transition font-semibold"
         >
           Inquiries
         </a>
         <a
           href="#rooms"
+          
           className="text-white hover:text-c2 transition font-semibold"
         >
           Rooms

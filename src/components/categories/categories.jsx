@@ -40,12 +40,12 @@ export default function CategoryCarousel() {
   }
 
   return (
-    <div className="w-[65%] py-6 px-4">
+    <div className="w-[65%] py-6 px-4 mt-[90px]">
       {/* Slide Show Container */}
       <div className="relative flex flex-row items-center justify-center">
         {/* Category Slide */}
         {categories.length > 0 && (
-          <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-6">
+          <div className="w-full max-w-md bg-white rounded-lg shadow-2xl p-6">
             <div className="flex justify-center items-center">
               <img
                 src={categories[currentCategoryIndex].image || "path-to-default-image"}

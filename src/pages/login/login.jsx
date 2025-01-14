@@ -23,9 +23,9 @@ export default function AuthPage() {
       .then((res) => {
         localStorage.setItem("token", res.data.token);
         if (res.data.user.type === "Customer") {
-          window.location.href = import.meta.env.VITE_FRONTEND_URL + "/";
+          window.location.href = "/";
         } else if (res.data.user.type === "Admin") {
-          window.location.href = import.meta.env.VITE_FRONTEND_URL + "/admin/";
+          window.location.href = "/admin/";
         }
         toast.success("Welcome")
       })

@@ -166,7 +166,7 @@ export default function AuthPage() {
         </div>
         <button
           onClick={() => {
-            window.location.href = import.meta.env.VITE_FRONTEND_URL;
+            window.location.href = "/";
           }}
           className="flex items-center bg-c2 font-bold text- px-6 py-1 rounded-xl text-2xl hover:border-c2 hover:border-4 hover:bg-transparent hover:text-c2 hover:py-0 hover:px-5"
         >

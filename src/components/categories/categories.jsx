@@ -40,7 +40,7 @@ export default function CategoryCarousel() {
   }
 
   return (
-    <div className="w-[65%] py-6 px-4 mt-[90px] bg-gray-200 rounded-3xl">
+    <div className="w-[65%] py-6 px-4 mt-[130px] bg-gray-200 rounded-3xl">
       {/* Slide Show Container */}
       <div className="relative flex flex-row items-center justify-center">
         {/* Category Slide */}

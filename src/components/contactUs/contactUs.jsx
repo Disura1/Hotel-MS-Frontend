@@ -9,7 +9,7 @@ const locations = [
 
 export default function ContactUs() {
   return (
-    <div className="flex justify-around w-[95%] px-4 py-4 rounded-2xl bg-gray-400">
+    <div className="flex mt-[50px] justify-around w-[95%] px-4 py-4 rounded-2xl bg-gray-400">
       <div className="w-[100%]">
         <div className="bg-c1 px-4 py-4 rounded-lg">
           <div className="flex flex-col">

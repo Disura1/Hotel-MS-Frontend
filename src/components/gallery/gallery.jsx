@@ -18,9 +18,9 @@ export default function Gallery() {
   }, []);
 
   return (
-    <div className="w-full py-6 px-4 mt-[90px] bg-gray-200">
+    <div className="w-full py-6 px-4 mt-[80px] bg-gray-200">
       {/* Gallery Section */}
-      <h2 className="text-3xl font-bold text-c3 text-center mb-8">Our Gallery</h2>
+      <h2 className="text-3xl font-bold text-c3 text-center mb-4">Our Gallery</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {galleryItems.map((item) => (
           <div

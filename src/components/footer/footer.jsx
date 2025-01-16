@@ -18,13 +18,13 @@ export default function Footer() {
           <h3 className="font-bold">Explore</h3>
           <ul>
             <li>
-              <Link to="">Room Categories</Link>
+              <a href="#rooms">Room Categories</a>
             </li>
             <li>
-              <Link to="">Gallery</Link>
+              <a href="#gallery">Gallery</a>
             </li>
             <li>
-              <Link to="">Reviews</Link>
+              <a href="#reviews">Reviews</a>
             </li>
             <li>
               <Link to="">About Us</Link>

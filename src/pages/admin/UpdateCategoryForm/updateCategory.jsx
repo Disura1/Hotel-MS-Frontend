@@ -1,6 +1,5 @@
 import { useState } from "react";
-import uploadMedia from "../../../utils/mediaUpload.js";
-import { getDownloadURL } from "firebase/storage";
+import { supabase, uploadMediaToSupabase } from "../../../utils/mediaUpload.js"; // named export
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -26,60 +25,97 @@ export default function UpdateCategoryForm() {
     window.location.href = "/login";
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    const featuresArray = features.split(",");
-    if (image == null) {
-      const categoryInfo = {
-        price: price,
-        features: featuresArray,
-        description: description,
-        image: location.state.image,
-      };
-      axios
-        .put(
-          import.meta.env.VITE_BACKEND_URL + "/api/category/" + name,
+
+    try {
+      const featuresArray = features
+        .split(",")
+        .map((f) => f.trim())
+        .filter((f) => f);
+      const categorySlug = location.state.name; // or use ID if your API expects it
+
+      // 🔹 Case 1: No new image → update with existing image URL
+      if (!image) {
+        const categoryInfo = {
+          name, // ✅ Include name if your backend expects it
+          price: Number(price),
+          features: featuresArray,
+          description,
+          image: location.state.image, // keep existing URL
+        };
+
+        await axios.put(
+          `${import.meta.env.VITE_BACKEND_URL}/api/category/${categorySlug}`,
           categoryInfo,
           {
             headers: {
-              Authorization: "Bearer " + token,
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
             },
-          }
-        )
-        .then((res) => {
-          console.log(res);
-          setIsLoading(false);
-          toast.success("Category updated successfuly");
-          navigate("/admin/categories");
+          },
+        );
+
+        toast.success("Category updated successfully!");
+        navigate("/admin/categories");
+        return;
+      }
+
+      // 🔹 Case 2: New image uploaded → upload to Supabase first
+      // Use unique filename to avoid cache issues
+      const fileName = `categories/${Date.now()}_${image.name.replace(/\s+/g, "-")}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("Images")
+        .upload(fileName, image, {
+          upsert: false,
+          contentType: image.type,
+          cacheControl: "3600",
         });
-    } else {
-      uploadMedia(image).then((snapshot) => {
-        getDownloadURL(snapshot.ref).then((url) => {
-          const categoryInfo = {
-            price: price,
-            features: featuresArray,
-            description: description,
-            image: url,
-          };
-          axios
-            .put(
-              import.meta.env.VITE_BACKEND_URL + "/api/category/" + name,
-              categoryInfo,
-              {
-                headers: {
-                  Authorization: "Bearer " + token,
-                },
-              }
-            )
-            .then((res) => {
-              console.log(res);
-              setIsLoading(false);
-              toast.success("Category updated successfully");
-              navigate("/admin/categories");
-            });
-        });
-      });
+
+      if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
+
+      // Get public URL
+      const {
+        data: { publicUrl },
+        error: urlError,
+      } = supabase.storage.from("Images").getPublicUrl(uploadData.path);
+
+      if (urlError || !publicUrl) {
+        throw new Error(
+          `Failed to get URL: ${urlError?.message || "Unknown error"}`,
+        );
+      }
+
+      // Prepare & send updated category
+      const categoryInfo = {
+        name,
+        price: Number(price),
+        features: featuresArray,
+        description,
+        image: publicUrl, // ✅ new image URL
+      };
+
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/category/${categorySlug}`,
+        categoryInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      toast.success("Category updated successfully!");
+      navigate("/admin/categories");
+    } catch (error) {
+      console.error("❌ Update error:", error);
+      toast.error("Failed to update: " + error.message);
+    } finally {
+      // ✅ ALWAYS stop loading, even on error
+      setIsLoading(false);
     }
   };
 

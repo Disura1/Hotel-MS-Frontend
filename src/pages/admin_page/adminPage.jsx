@@ -24,43 +24,43 @@ export default function AdminPage() {
   return (
     <div className="flex w-full h-screen max-h-screen">
       <div className="w-[20%] min-w-[20%] h-screen bg-c1 flex flex-col items-center text-[30px]">
-        <h1 className="font-bold text-4xl bg-gradient-to-r from-c2 to-c4 bg-clip-text text-transparent my-5 cursor-pointer"
+        <h1 className="font-bold text-3xl bg-gradient-to-r from-c2 to-c4 bg-clip-text text-transparent my-5 cursor-pointer"
         onClick={() => {
           window.location.href = "http://localhost:5173/admin/";
         }}>
           Admin Dashboard
         </h1>
-        <div className="my-5 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
+        <div className="my-5 text-2xl py-1 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
           <MdBookmarkBorder />
           <Link className="pl-4" to="/admin/bookings">
             Bookings
           </Link>
         </div>
-        <div className="my-5 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
+        <div className="my-5 text-2xl py-1 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
           <MdOutlineCategory />
           <Link className="pl-4" to="/admin/categories">
             Categories
           </Link>
         </div>
-        <div className="my-5 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
+        <div className="my-5 text-2xl py-1 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
           <MdOutlineBedroomParent />
           <Link className="pl-4" to="/admin/rooms">
             Rooms
           </Link>
         </div>
-        <div className="my-5 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
+        <div className="my-5 text-2xl py-1 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
           <FaRegUser />
           <Link className="pl-4" to="/admin/users">
             Users
           </Link>
         </div>
-        <div className="my-5 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
+        <div className="my-5 text-2xl py-1 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
           <MdOutlineFeedback />
           <Link className="pl-4" to="/admin/feedbacks">
             Feedbacks
           </Link>
         </div>
-        <div className="my-5 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
+        <div className="my-5 text-2xl py-1 border-[3px] w-[80%] pl-6 rounded-full hover:font-bold hover:bg-c2 hover:text-white focus-within:bg-c2 flex items-center">
           <GrGallery />
           <Link className="pl-4" to="/admin/galleryItems">
             Gallery Items
@@ -68,9 +68,17 @@ export default function AdminPage() {
         </div>
       </div>
       <div className="h-screen w-full">
-        <div className="h-[10%] bg-gradient-to-r from-c1 to-c2 w-full flex items-center justify-end pr-5">
+        <div className="h-[10%] bg-gradient-to-r from-c1 to-c2 w-full flex items-center justify-between pr-5">
           <button
-            className="bg-red-500 font-bold text-2xl px-4 py-1 rounded-full hover:bg-transparent hover:text-red-500 hover:bg-c1 hover:border-4 hover:px-3 hover:py-0 hover:border-red-500"
+            className="bg-blue-500 font-bold px-4 py-1 ml-6 rounded-full hover:bg-transparent hover:text-white hover:bg-c1 hover:border-4 hover:px-3 hover:py-0 hover:border-blue-500"
+            onClick={() => {
+              window.location.href = "http://localhost:5173";
+            }}
+          >
+            Visit Website
+          </button>
+          <button
+            className="bg-red-500 font-bold px-4 py-1 rounded-full hover:bg-transparent hover:text-red-500 hover:bg-c1 hover:border-4 hover:px-3 hover:py-0 hover:border-red-500"
             onClick={() => {
               localStorage.removeItem("token");
               window.location.href = "/login";

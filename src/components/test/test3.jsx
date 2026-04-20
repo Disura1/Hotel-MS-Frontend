@@ -9,7 +9,7 @@ export function UploadComponent(){
             console.log(res)
         })
         const url = supabase.storage
-        .from("images")
+        .from("Images")
         .getPublicUrl(file.name)
         console.log(url.data.publicUrl)
     }

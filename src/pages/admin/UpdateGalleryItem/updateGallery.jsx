@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import uploadMedia from "../../../utils/mediaUpload.js";
-import { getDownloadURL } from "firebase/storage";
+import { supabase } from "../../../utils/mediaUpload.js"; // ✅ Named import
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -23,74 +22,71 @@ export default function UpdateGalleryItemForm() {
     window.location.href = "/login";
   }
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!image) {
+    try {
+      const galleryId = location.state._id;
+      let imageUrl = location.state.image; // ✅ Keep existing image by default
+
+      // 🔹 If new image selected → upload to Supabase
+      if (image) {
+        const fileName = `gallery/${Date.now()}_${image.name.replace(/\s+/g, "-")}`;
+
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("Images")
+          .upload(fileName, image, {
+            upsert: false,
+            contentType: image.type,
+            cacheControl: "3600",
+          });
+
+        if (uploadError)
+          throw new Error(`Upload failed: ${uploadError.message}`);
+
+        const {
+          data: { publicUrl },
+          error: urlError,
+        } = supabase.storage.from("Images").getPublicUrl(uploadData.path);
+
+        if (urlError || !publicUrl) {
+          throw new Error(
+            `Failed to get image URL: ${urlError?.message || "Unknown error"}`,
+          );
+        }
+
+        imageUrl = publicUrl; // ✅ Use new image URL
+      }
+
+      // 🔹 Send update to backend
       const galleryItemInfo = {
         name,
         description,
-        image: location.state.image,
+        image: imageUrl,
       };
 
-      axios
-        .put(
-          `${import.meta.env.VITE_BACKEND_URL}/api/gallery/${
-            location.state._id
-          }`,
-          galleryItemInfo,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((res) => {
-          setIsLoading(false);
-          toast.success("Gallery item updated successfully");
-          navigate("/admin/galleryItems");
-        })
-        .catch((err) => {
-          setIsLoading(false);
-          toast.error("Error updating gallery item");
-          console.error(err);
-        });
-    } else {
-      uploadMedia(image)
-        .then((snapshot) => getDownloadURL(snapshot.ref))
-        .then((url) => {
-          const galleryItemInfo = {
-            name,
-            description,
-            image: url,
-          };
+      await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/gallery/${galleryId}`,
+        galleryItemInfo,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
 
-          axios
-            .put(
-              `${import.meta.env.VITE_BACKEND_URL}/api/gallery/${
-                location.state._id
-              }`,
-              galleryItemInfo,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            )
-            .then((res) => {
-              setIsLoading(false);
-              toast.success("Gallery item updated successfully");
-              navigate("/admin/galleryItems");
-            });
-        })
-        .catch((err) => {
-          setIsLoading(false);
-          toast.error("Error updating gallery item");
-          console.error(err);
-        });
+      toast.success("Gallery item updated successfully!");
+      navigate("/admin/galleryItems");
+    } catch (error) {
+      console.error("❌ Update gallery error:", error);
+      toast.error("Failed: " + error.message);
+    } finally {
+      // ✅ Always stop loading
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full h-[100vh] flex justify-center items-center">
@@ -133,7 +129,7 @@ export default function UpdateGalleryItemForm() {
 
         <div>
           <label htmlFor="image" className="block font-medium mb-1">
-            Image (optional)
+            Image <span className="text-gray-500 text-sm">(optional)</span>
           </label>
           <input
             id="image"
@@ -142,11 +138,25 @@ export default function UpdateGalleryItemForm() {
             onChange={(e) => setImage(e.target.files[0])}
             className="w-full px-4 py-2 border rounded"
           />
+          {location.state.image && !image && (
+            <p className="text-sm text-gray-600 mt-1">
+              Current:{" "}
+              <a
+                href={location.state.image}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-500 underline"
+              >
+                View Image
+              </a>
+            </p>
+          )}
         </div>
 
         <button
           type="submit"
           className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 flex justify-center"
+          disabled={isLoading}
         >
           {isLoading ? (
             <div className="border-t-2 border-t-white w-[20px] min-h-[20px] rounded-full animate-spin"></div>

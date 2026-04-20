@@ -1,6 +1,5 @@
 import { useState } from "react";
-import uploadMedia from "../../../utils/mediaUpload.js";
-import { getDownloadURL } from "firebase/storage";
+import { supabase } from "../../../utils/mediaUpload.js"; // ✅ Named import
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
@@ -17,51 +16,69 @@ export default function AddGalleryItem() {
     window.location.href = "/login";
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!name || !description || !image) {
       toast.error("All fields are required!");
       return;
     }
+
     setIsLoading(true);
 
-    uploadMedia(image)
-      .then((snapshot) => {
-        return getDownloadURL(snapshot.ref);
-      })
-      .then((url) => {
-        const galleryItem = {
-          name,
-          description,
-          image: url,
-        };
+    try {
+      // 🔹 Step 1: Upload image to Supabase Storage
+      const fileName = `gallery/${Date.now()}_${image.name.replace(/\s+/g, "-")}`;
 
-        axios
-          .post(
-            import.meta.env.VITE_BACKEND_URL + "/api/gallery",
-            galleryItem,
-            {
-              headers: {
-                Authorization: "Bearer " + token,
-              },
-            }
-          )
-          .then((res) => {
-            toast.success("Gallery item added successfully!");
-            navigate("/admin/galleryItems/");
-            setIsLoading(false);
-          })
-          .catch((err) => {
-            console.error(err);
-            toast.error("Failed to add gallery item.");
-            setIsLoading(false);
-          });
-      })
-      .catch((err) => {
-        console.error(err);
-        toast.error("Image upload failed.");
-        setIsLoading(false);
-      });
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("Images")
+        .upload(fileName, image, {
+          upsert: false,
+          contentType: image.type,
+          cacheControl: "3600",
+        });
+
+      if (uploadError) throw new Error(`Upload failed: ${uploadError.message}`);
+
+      // 🔹 Step 2: Get public URL
+      const {
+        data: { publicUrl },
+        error: urlError,
+      } = supabase.storage.from("Images").getPublicUrl(uploadData.path);
+
+      if (urlError || !publicUrl) {
+        throw new Error(
+          `Failed to get image URL: ${urlError?.message || "Unknown error"}`,
+        );
+      }
+
+      // 🔹 Step 3: Send gallery item to backend
+      const galleryItem = {
+        name,
+        description,
+        image: publicUrl, // ✅ Supabase public URL
+      };
+
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/gallery`,
+        galleryItem,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      toast.success("Gallery item added successfully!");
+      navigate("/admin/galleryItems/");
+    } catch (error) {
+      console.error("❌ Add gallery error:", error);
+      toast.error("Failed: " + error.message);
+    } finally {
+      // ✅ Always stop loading
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -118,6 +135,7 @@ export default function AddGalleryItem() {
         <button
           type="submit"
           className="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600 flex justify-center"
+          disabled={isLoading}
         >
           {isLoading ? (
             <div className="border-t-2 border-t-white w-[20px] h-[20px] rounded-full animate-spin"></div>

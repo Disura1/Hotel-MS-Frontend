@@ -1,12 +1,12 @@
-import app from "../config/firebase";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+// import app from "../config/firebase";
+// import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
-const storage = getStorage(app, "gs://hotel-management-89.appspot.com");
+// const storage = getStorage(app, "gs://hotel-management-89.appspot.com");
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = "https://acxxreftsamlgqcdomju.supabase.co";
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjeHhyZWZ0c2FtbGdxY2RvbWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI2OTk3ODUsImV4cCI6MjA0ODI3NTc4NX0.d_FttPNfKu-VJk4MGi7Kq-zspn-MeVsBLoUDZRcj5bA"
+const supabaseUrl = "https://ktuoawzzqcqvidxiqkzy.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt0dW9hd3p6cWNxdmlkeGlxa3p5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ5Mzc2MTcsImV4cCI6MjA5MDUxMzYxN30.jvAbkT1pPwjsb05C3THNnpcMipfexMD7NBj3rXWS-mU"
 
 export const supabase = createClient(supabaseUrl, supabaseKey)
 
@@ -34,7 +34,7 @@ export function uploadMediaToSupabase(file){
         return
     }
     return supabase.storage
-    .from("images")
+    .from("Images")
     .upload(file.name, file, {
         cacheControl: "3600",
         upsert: false

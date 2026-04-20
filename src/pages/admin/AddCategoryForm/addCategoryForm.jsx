@@ -29,20 +29,21 @@ export default function AddCategoryForm() {
       // Step 1: Upload the image to Supabase
       if (image) {
         const { data, error } = await supabase.storage
-          .from("images") // Replace with your actual bucket name
+          .from("Images") // Replace with your actual bucket name
           .upload(`categories/${image.name}`, image);
 
         if (error) throw new Error(error.message);
 
         // Step 2: Get the public URL of the uploaded image
-        const { publicURL, error: urlError } = supabase.storage
-          .from("images")
-          .getPublicUrl(data.path);
+        const {
+          data: { publicUrl },
+          error: urlError,
+        } = supabase.storage.from("Images").getPublicUrl(data.path);
 
-        if (error) {
-          console.log("Error fetching image: ", error);
+        if (urlError) {
+          console.log("Error fetching image: ", urlError);
         } else {
-          console.log("Image URL: ", publicURL);
+          console.log("Image URL: ", publicUrl); // ✅ Works!
         }
 
         // Step 3: Prepare the category data
@@ -51,7 +52,7 @@ export default function AddCategoryForm() {
           price: price,
           features: featuresArray,
           description: description,
-          image: publicURL, // The public URL of the uploaded image
+          image: publicUrl, // The public URL of the uploaded image
         };
 
         // Step 4: Send the category data to the backend API
@@ -62,7 +63,7 @@ export default function AddCategoryForm() {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
 
         // Success handling
@@ -85,7 +86,10 @@ export default function AddCategoryForm() {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded shadow-md w-[400px] flex flex-col gap-4"
       >
-        <button className="text-end" onClick={() => navigate("/admin/categories/")}>
+        <button
+          className="text-end"
+          onClick={() => navigate("/admin/categories/")}
+        >
           <IoClose />
         </button>
         <h2 className="text-xl font-bold mb-4 text-center">Add New Category</h2>

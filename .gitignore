@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 package-lock.json
 .env
+credentials.txt
 dist
 dist-ssr
 *.local
